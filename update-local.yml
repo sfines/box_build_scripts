@@ -1,0 +1,47 @@
+- hosts: localhost
+  connection: local
+  become: yes
+  become_user: sfines
+  tasks:
+    - name: Install packages
+      become: yes
+      become_user: root
+      apt:
+        name: "{{ packages }}"
+        update_cache: true
+      vars:
+        packages:
+            - neovim
+            - tmux
+            - rcm
+            - silversearcher-ag
+  
+    - name: Add Neovim PPA
+      apt_repository:
+        repo: ppa:neovim-ppa/stable
+    
+    - name: Add rcm PPA
+      apt_repository: 
+        repo: ppa:martin-frost/thoughtbot-rcm
+
+    - name: Install dotfiles
+      git:
+        repo: ssh://git@github.com/sfines/dotfiles-1.git
+        dest: ~/dotfiles
+
+    - name: Install local dotfiles
+      git:
+        repo: ssh://git@github.com/sfines/dotfiles-local.git
+        dest: ~/dotfiles-local
+
+    - name: Create vimrc links
+      file:
+        src: "~/dotfiles/vimrc"
+        dest: "~/.config/nvim/init.vim"
+
+    - name: Create vim bundle.links
+      file:
+        src: "~/dotfiles/vim"
+        dest: "~/.config/nvim/vim"
+        state: link
+
