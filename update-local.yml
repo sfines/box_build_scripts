@@ -15,6 +15,7 @@
             - tmux
             - rcm
             - silversearcher-ag
+            - zsh
   
     - name: Add Neovim PPA
       apt_repository:
@@ -34,6 +35,11 @@
         repo: ssh://git@github.com/sfines/dotfiles-local.git
         dest: ~/dotfiles-local
 
+    - name: Install oh-my-zsh
+      git:
+        repo: https://github.com/robbyrussell/oh-my-zsh.git
+        dest: ~/.oh-my-zsh
+   
     - name: Create vimrc links
       file:
         src: "~/dotfiles/vimrc"
@@ -45,3 +51,5 @@
         dest: "~/.config/nvim/vim"
         state: link
 
+    - name: re-generate config files
+      shell: rcup
