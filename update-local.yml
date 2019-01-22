@@ -3,6 +3,32 @@
   become: yes
   become_user: sfines
   tasks:
+
+    - name: Add Neovim PPA
+      apt_repository:
+        repo: ppa:neovim-ppa/stable
+
+    - name: Add rcm PPA
+      apt_repository: 
+        repo: ppa:martin-frost/thoughtbot-rcm
+
+    - name: Add Docker Apt Key
+      become: yes
+      become_user: root
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker/CE repo
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+
+    - name: Add SBT repo
+      become: yes
+      become_user: root
+      apt_repository:
+        repo: deb https://dl.bintray.com/sbt/debian /
+
     - name: Install packages
       become: yes
       become_user: root
@@ -16,14 +42,14 @@
             - rcm
             - silversearcher-ag
             - zsh
-  
-    - name: Add Neovim PPA
-      apt_repository:
-        repo: ppa:neovim-ppa/stable
-    
-    - name: Add rcm PPA
-      apt_repository: 
-        repo: ppa:martin-frost/thoughtbot-rcm
+            - fonts-powerline
+            - docker-ce
+            - vagrant
+            - vagrant-cachier
+            - vagrant-lxc
+            - openjdk-8-jdk
+            - sbt
+
 
     - name: Install dotfiles
       git:
@@ -39,7 +65,7 @@
       git:
         repo: https://github.com/robbyrussell/oh-my-zsh.git
         dest: ~/.oh-my-zsh
-   
+
     - name: Create vimrc links
       file:
         src: "~/dotfiles/vimrc"
@@ -53,3 +79,44 @@
 
     - name: re-generate config files
       shell: rcup
+
+    - name: Add local user to the docker group
+      become: yes
+      become_user: root
+      user:
+        name: sfines
+        groups: docker
+        append: yes
+    
+    - name: Fetch teraform
+      become: yes
+      become_user: root
+      unarchive:
+        src: https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip
+        dest: /usr/local/bin
+        remote_src: yes
+
+    - name: Fetch Golang
+      become: yes
+      become_user: root
+      unarchive: 
+        src: https://dl.google.com/go/go1.11.4.linux-amd64.tar.gz
+        dest: /usr/local
+        remote_src: yes
+
+    - name: Fetch Vault
+      become: yes
+      become_user: root
+      unarchive:
+        src: https://releases.hashicorp.com/vault/1.0.2/vault_1.0.2_linux_amd64.zip
+        dest: /usr/local/bin
+        remote_src: yes
+
+    - name: Fetch Jetbrains Toolbox
+      become: yes
+      become_user: root
+      unarchive:
+        src: https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.13.4733.tar.gz
+        dest: /usr/local
+        remote_src: yes
+
