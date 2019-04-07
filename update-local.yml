@@ -35,6 +35,19 @@
       apt_repository:
         repo: deb https://dl.bintray.com/sbt/debian /
 
+    - name: Add MSFT apt key
+      become: yes
+      become_user: root
+      apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        state: present
+
+    - name: Add MSFT repo
+      become: yes
+      become_user: root
+      apt_repository:
+        repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+
     - name: Install packages
       become: yes
       become_user: root
@@ -56,6 +69,7 @@
             - openjdk-8-jdk
             - sbt
             - python3-pip
+            - code
 
 
     - name: Install dotfiles
