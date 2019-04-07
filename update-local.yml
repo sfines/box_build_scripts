@@ -70,12 +70,13 @@
             - sbt
             - python3-pip
             - code
+            - emacs
 
 
     - name: Install dotfiles
       git:
         repo: ssh://git@github.com/sfines/dotfiles-1.git
-        dest: ~/dotfiles
+        dest: ~/dotfilesdataknif
 
     - name: Install local dotfiles
       git:
@@ -87,6 +88,17 @@
         repo: https://github.com/robbyrussell/oh-my-zsh.git
         dest: ~/.oh-my-zsh
 
+    - name: Install spaceemacs
+      git:
+        repo: https://github.com/syl20bnr/spacemacs
+        dest: ~/.config/emacs
+
+    - name: Crete emacs links
+      file:
+        src: "~/.config/emacs"
+        dest: "~/.emacs.d"
+        state: link
+
     - name: Create vimrc links
       file:
         src: "~/dotfiles/vimrc"
@@ -97,6 +109,12 @@
       file:
         src: "~/dotfiles/vim"
         dest: "~/.config/nvim/vim"
+        state: link
+    
+    - name: More bundle linking
+      file:
+        src: "~/dotfiles/vimrc.bundles"
+        dest: "~/.vimrc.bundles"
         state: link
 
     - name: re-generate config files
