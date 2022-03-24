@@ -31,22 +31,25 @@
           - rcm
           - dark-mode
   
-    - name: Install Various
-      community.general.homebrew_cask:
-        name: "{{ casks }}"
-        state: present
-        install_options: 'appdir=/Applications'
-        vars:
-          casks:
-            - visual-studio-code
-            - alfred
-            - iterm2
-            - rectangle
-            - sublime-text
-            - sublime-merge
-            - path-finder
-            - beyond-compare
-            - jetbrains-toolbox
+  - name: Install Various
+    community.general.homebrew_cask:
+      name: "{{ casks }}"
+      state: present
+      install_options: 'appdir=/Applications'
+      vars:
+        casks:
+          - visual-studio-code
+          - alfred
+          - iterm2
+          - rectangle
+          - sublime-text
+          - sublime-merge
+          - path-finder
+          - beyond-compare
+          - jetbrains-toolbox
+          - steam
+          - bitwig-studio
+
 
 
 
