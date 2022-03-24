@@ -1,15 +1,70 @@
 - tasks:
+  - name: Install brew
+    ansible.builtin.command:
+      argv:
+        - /bin/bash 
+        - -c 
+        - "$(NONINTERACTIVE=1; curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+  - name: Tap Casks
+    community.general.homebrew_cask:
+      name: "{{ casks }}"
+      state: present
+      vars:
+        casks:
+          - cask-fonts
+          - pd
+          - supercollider
 
   - name: Install brew packages
     community.general.homebrew:
       name: "{{ packages }}"
       update_homebrew: true
+      upgrade_all: yes
       vars:
         packages:
-          - python@3.9
+          - python3
           - tmux
           - fsf
           - bat
           - the_silver_searcher
           - htop
-          - 
+          - gh
+          - docker
+          - git
+          - nvim
+          - homebrew/cask/pd
+          - homebrew/cask/supercollider
+          - rcm
+  
+  - name: Fetch iTerm2 Installer
+    get_url:
+      url: https://iterm2.com/downloads/stable/iTerm2-3_4_15.zip
+      dest: ~/Downloads/iTerm2-3_4_15.zip
+  
+  - name: Fetch VSCode
+    get_url:
+      url: https://code.visualstudio.com/sha/download?build=stable&os=darwin-universal
+      dest: ~/Downloads/VSCode-darwin.zip
+
+  - name: Fetch Jetbrains Toolbox
+    get_url:
+      url: https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.22.10970-arm64.dmg
+      dest: ~/Downloads/JetBrains-toolbox-arm64.dmg
+  
+  - name: Fetch Alfred
+    get_url:
+      url: https://cachefly.alfredapp.com/Alfred_4.6.4_1294.dmg
+      dest: ~/Downloads/Alfred_4.6.4_1294.dmg
+  
+  - name: Fetch Pathfinder
+    get_url:
+      url: https://get.cocoatech.com/PathFinder.dmg
+      dest: ~/Downloads/PathFinder.dmg
+  
+  - name: Fetch Rectangle
+    get_url: 
+      url: https://github.com/rxhanson/Rectangle/releases/download/v0.53/Rectangle0.53.dmg
+      dest: ~/Downloads/Rectangle.dmg
+
+  

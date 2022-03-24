@@ -2,102 +2,65 @@
   connection: local
   become: yes
   become_user: sfines
+
   tasks:
+    - include: update-ubuntu.yml
+      when: ansible_os_family == 'Debian'
+    
+    - include: update-mac.yml
+      when: ansible_os_family == 'Darwin'
 
-    - name: Add Neovim PPA
-      become: yes
-      become_user: root
-      apt_repository:
-        repo: ppa:neovim-ppa/stable
+    - name: Create Workspace Directory
+      file:
+        path: ~/workspace
+        state: directory
 
-    - name: Add rcm PPA
-      become: yes
-      become_user: root
-      apt_repository: 
-        repo: ppa:martin-frost/thoughtbot-rcm
+    - name: Create Config Directory
+      file:
+        path: ~/.config
+        state: directory
 
-    - name: Add Docker Apt Key
-      become: yes
-      become_user: root
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+    - name: Create Install Temp Directory
+      file:
+        path: ~/install
+        state: directory
 
-    - name: Add Docker/CE repo
-      become: yes
-      become_user: root
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
-
-    - name: Add SBT repo
-      become: yes
-      become_user: root
-      apt_repository:
-        repo: deb https://dl.bintray.com/sbt/debian /
-
-    - name: Add MSFT apt key
-      become: yes
-      become_user: root
-      apt_key:
-        url: https://packages.microsoft.com/keys/microsoft.asc
-        state: present
-
-    - name: Add MSFT repo
-      become: yes
-      become_user: root
-      apt_repository:
-        repo: deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
-
-    - name: Install packages
-      become: yes
-      become_user: root
-      apt:
-        name: "{{ packages }}"
-        update_cache: true
-      vars:
-        packages:
-            - neovim
-            - tmux
-            - rcm
-            - silversearcher-ag
-            - zsh
-            - fonts-powerline
-            - docker-ce
-            - vagrant
-            - vagrant-cachier
-            - vagrant-lxc
-            - openjdk-8-jdk
-            - sbt
-            - python3-pip
-            - code
-            - emacs
-
-
-    - name: Install dotfiles
+    - name: Install dotfiles (from thoughtbot)
       git:
         repo: ssh://git@github.com/sfines/dotfiles-1.git
-        dest: ~/dotfilesdataknif
+        dest: ~/dotfiles
 
     - name: Install local dotfiles
       git:
         repo: ssh://git@github.com/sfines/dotfiles-local.git
         dest: ~/dotfiles-local
+        depth: 1
 
-    - name: Install oh-my-zsh
+    - name: Install Oh My Zsh
+      ansible.builtin.command:
+        argv:
+          - sh 
+          - -c 
+          - "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 
+          - "" 
+          - --unattended
+    - name: Install Powerlevel 10K
       git:
-        repo: https://github.com/robbyrussell/oh-my-zsh.git
-        dest: ~/.oh-my-zsh
+        repo: https://github.com/romkatv/powerlevel10k.git 
+        dest: ~/.oh-my-zsh/custom/themes/powerlevel10k
+        depth: 1
 
-    - name: Install spaceemacs
+    - name: Fetch Powerline Fonts Installer
       git:
-        repo: https://github.com/syl20bnr/spacemacs
-        dest: ~/.config/emacs
-
-    - name: Crete emacs links
-      file:
-        src: "~/.config/emacs"
-        dest: "~/.emacs.d"
-        state: link
+        repo: https://github.com/powerline/fonts.git
+        dest: ~/install/powerline-fonts
+    
+    - name: Install Powerline Fonts:
+      ansible.builtin.command:
+        argv:
+          - /bin/bash
+          - -c 
+          - "$(cd ./install/powerline-fonts; ./install.sh)"
 
     - name: Create vimrc links
       file:
@@ -117,46 +80,20 @@
         dest: "~/.vimrc.bundles"
         state: link
 
+    - name: Install spaceemacs
+      git:
+        repo: https://github.com/syl20bnr/spacemacs
+        dest: ~/.config/emacs
+
+    - name: Create emacs links
+      file:
+        src: "~/.config/emacs"
+        dest: "~/.emacs.d"
+        state: link
+
     - name: re-generate config files
-      shell: rcup
+      ansible.builtin.command: 
+        argv:
+        - rcup
 
-    - name: Add local user to the docker group
-      become: yes
-      become_user: root
-      user:
-        name: sfines
-        groups: docker
-        append: yes
-    
-    - name: Fetch teraform
-      become: yes
-      become_user: root
-      unarchive:
-        src: https://releases.hashicorp.com/terraform/0.11.11/terraform_0.11.11_linux_amd64.zip
-        dest: /usr/local/bin
-        remote_src: yes
-
-    - name: Fetch Golang
-      become: yes
-      become_user: root
-      unarchive: 
-        src: https://dl.google.com/go/go1.11.4.linux-amd64.tar.gz
-        dest: /usr/local
-        remote_src: yes
-
-    - name: Fetch Vault
-      become: yes
-      become_user: root
-      unarchive:
-        src: https://releases.hashicorp.com/vault/1.0.2/vault_1.0.2_linux_amd64.zip
-        dest: /usr/local/bin
-        remote_src: yes
-
-    - name: Fetch Jetbrains Toolbox
-      become: yes
-      become_user: root
-      unarchive:
-        src: https://download.jetbrains.com/toolbox/jetbrains-toolbox-1.13.4733.tar.gz
-        dest: /usr/local
-        remote_src: yes
 
