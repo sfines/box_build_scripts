@@ -1,7 +1,7 @@
 ---
 - name: Tap Casks
   community.general.homebrew_cask:
-    name: "{{ casks }}"
+    name: "{{casks}}"
     state: present
     vars:
       casks:
