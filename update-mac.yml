@@ -26,8 +26,6 @@
           - docker
           - git
           - nvim
-          - homebrew/cask/pd
-          - homebrew/cask/supercollider
           - rcm
           - dark-mode
   
@@ -49,6 +47,9 @@
           - jetbrains-toolbox
           - steam
           - bitwig-studio
+          - google-chrome
+          - dropbox
+          - adobe-acrobat-pro
 
 
 
