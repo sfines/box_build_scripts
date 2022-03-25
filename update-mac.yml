@@ -1,55 +1,56 @@
-- tasks:
-  - name: Tap Casks
-    community.general.homebrew_cask:
-      name: "{{ casks }}"
-      state: present
-      vars:
-        casks:
-          - cask-fonts
-          - pd
-          - supercollider
+---
+- name: Tap Casks
+  community.general.homebrew_cask:
+    name: "{{ casks }}"
+    state: present
+    vars:
+      casks:
+        - cask-fonts
+        - pd
+        - supercollider
 
-  - name: Install brew packages
-    community.general.homebrew:
-      name: "{{ packages }}"
-      update_homebrew: true
-      upgrade_all: yes
-      vars:
-        packages:
-          - python3
-          - tmux
-          - fsf
-          - bat
-          - the_silver_searcher
-          - htop
-          - gh
-          - docker
-          - git
-          - nvim
-          - rcm
-          - dark-mode
-  
-  - name: Install Various Apps
-    community.general.homebrew_cask:
-      name: "{{ casks }}"
-      state: present
-      install_options: 'appdir=/Applications'
-      vars:
-        casks:
-          - visual-studio-code
-          - alfred
-          - iterm2
-          - rectangle
-          - sublime-text
-          - sublime-merge
-          - path-finder
-          - beyond-compare
-          - jetbrains-toolbox
-          - steam
-          - bitwig-studio
-          - google-chrome
-          - dropbox
-          - adobe-acrobat-pro
+- name: Install brew packages
+  community.general.homebrew:
+    name: "{{ packages }}"
+    update_homebrew: true
+    upgrade_all: yes
+    vars:
+      packages:
+        - python3
+        - tmux
+        - fsf
+        - bat
+        - the_silver_searcher
+        - htop
+        - gh
+        - docker
+        - git
+        - nvim
+        - rcm
+        - dark-mode
+
+- name: Install Various Apps
+  community.general.homebrew_cask:
+    name: "{{ casks }}"
+    state: present
+    install_options: 'appdir=/Applications'
+    vars:
+      casks:
+        - visual-studio-code
+        - alfred
+        - iterm2
+        - rectangle
+        - sublime-text
+        - sublime-merge
+        - path-finder
+        - beyond-compare
+        - jetbrains-toolbox
+        - steam
+        - bitwig-studio
+        - google-chrome
+        - dropbox
+        - adobe-acrobat-pro
+        - notion
 
 
 

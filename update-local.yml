@@ -4,10 +4,10 @@
   become_user: sfines
 
   tasks:
-    - include: update-ubuntu.yml
+    - include_tasks: update-ubuntu.yml
       when: ansible_os_family == 'Debian'
     
-    - include: update-mac.yml
+    - include_tasks: update-mac.yml
       when: ansible_os_family == 'Darwin'
 
     - name: Create Workspace Directory
@@ -55,7 +55,7 @@
         repo: https://github.com/powerline/fonts.git
         dest: ~/install/powerline-fonts
     
-    - name: Install Powerline Fonts:
+    - name: Install Powerline Fonts
       ansible.builtin.command:
         argv:
           - /bin/bash
